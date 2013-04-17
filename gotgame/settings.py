@@ -8,9 +8,6 @@ root = lambda *x: join(abspath(PROJECT_ROOT), *x)
 
 sys.path.insert(0, root('apps'))
 
-
-print sys.path
-
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
