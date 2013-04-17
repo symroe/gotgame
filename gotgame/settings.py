@@ -1,4 +1,15 @@
-# Django settings for gotgame project.
+import sys
+from os.path import join, abspath, dirname
+
+here = lambda *x: join(abspath(dirname(__file__)), *x)
+PROJECT_ROOT = here(".")
+root = lambda *x: join(abspath(PROJECT_ROOT), *x)
+
+
+sys.path.insert(0, root('apps'))
+
+
+print sys.path
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -113,6 +124,7 @@ TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
 )
 
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -124,6 +136,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
+    'emailparser',
 )
 
 # A sample logging configuration. The only tangible logging
