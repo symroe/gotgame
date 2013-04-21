@@ -2,3 +2,4 @@ Django==1.5.1
 redis
 South==0.7.6
 psycopg2==2.4.6
+django-tastypie==0.9.14
