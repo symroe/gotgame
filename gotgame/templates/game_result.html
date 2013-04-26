@@ -1,0 +1,54 @@
+<html>
+<head>
+	<title>Game Result</title>
+
+	<meta name="viewport" content="initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+
+	<style>
+		.button {
+	        width: 300px;
+	        height: 70px;
+	        border: 2px solid #ccc;
+		}
+
+		#messages {
+			background: #6E6E6E;
+			padding: 10px;
+			border: 2px solid #ccc;
+			color: #FFFFFF;
+		}
+	</style>
+</head>
+<body>
+
+	{% if messages %}
+	<div id="messages">
+	    {% for message in messages %}{{ message }}{% endfor %}
+	</div>
+	{% endif %}
+
+	<h1>Who's the winner?</h1>
+
+	<div>
+		<form action="{% url "game_result" %}" method="POST">{% csrf_token %}
+			<input type="hidden" name="winner" value="1">
+			<input type="submit" value="Player 1" class="button" />
+		</form>
+	</div>
+
+	<div>
+		<form action="{% url "game_result" %}" method="POST">{% csrf_token %}
+			<input type="hidden" name="winner" value="2">
+			<input type="submit" value="Player 2" class="button" />
+		</form>
+	</div>
+
+	<script>
+		setTimeout(function() {
+			var messages = document.getElementById("messages");
+			messages.style.display = 'none';
+		}, 3000);
+	</script>
+</body>
+</html>
