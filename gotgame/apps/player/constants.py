@@ -1,0 +1,11 @@
+RESULT_VOID = 0
+RESULT_WON = 1
+RESULT_LOST = 2
+RESULT_DISPUTE = 3
+
+GAME_RESULTS = (
+    (RESULT_VOID, 'Void'),
+    (RESULT_WON, 'Won'),
+    (RESULT_LOST, 'Lost'),
+    (RESULT_DISPUTE, 'Dispute'),
+)
