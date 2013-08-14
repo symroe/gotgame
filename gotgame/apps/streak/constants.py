@@ -9,3 +9,9 @@ GAME_RESULTS = (
     (RESULT_LOST, 'Lost'),
     (RESULT_DISPUTE, 'Dispute'),
 )
+
+def valid_levels():
+    start = 1
+    for i in range(0,21):
+        yield (start, start)
+        start = start * 2

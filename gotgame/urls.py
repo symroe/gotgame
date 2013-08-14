@@ -17,11 +17,11 @@ urlpatterns = patterns('',
 
 
 from tastypie.api import Api
-from game.api import ProfileResource
+# from game.api import ProfileResource
 
-api_v1 = Api(api_name='v1')
-api_v1.register(ProfileResource())
+# api_v1 = Api(api_name='v1')
+# api_v1.register(ProfileResource())
 
 urlpatterns += patterns('',
-    (r'^api/', include(api_v1.urls)),
+    # (r'^api/', include(api_v1.urls)),
 )
