@@ -17,7 +17,7 @@ class Streak(models.Model):
     Each time a player wins, the current_level is doubled.
     """
     player = models.ForeignKey(Player)
-    current_level = models.IntegerField(blank=True, null=True, choices=constants.valid_levels())
+    current_level = models.IntegerField(blank=False, choices=constants.valid_levels())
 
 
 class StreakGame(models.Model):
@@ -29,7 +29,7 @@ class StreakGame(models.Model):
     streak = models.ForeignKey(Streak)
     title = models.ForeignKey(Title)
     result = models.ForeignKey('StreakGameResult')
-    game_level = models.IntegerField(blank=True, null=True, choices=constants.valid_levels())
+    game_level = models.IntegerField(blank=False, choices=constants.valid_levels())
 
 
 
