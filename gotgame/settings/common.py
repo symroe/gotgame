@@ -2,11 +2,12 @@ import sys
 from os.path import join, abspath, dirname
 
 here = lambda *x: join(abspath(dirname(__file__)), *x)
-PROJECT_ROOT = here(".")
+PROJECT_ROOT = here("..")
 root = lambda *x: join(abspath(PROJECT_ROOT), *x)
 
 
 sys.path.insert(0, root('apps'))
+sys.path.insert(0, root('libs'))
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -21,7 +22,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',  # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'gotgame',                      # Or path to database file if using sqlite3.
-        'USER': 'symroe',                      # Not used with sqlite3.
+        'USER': '',                      # Not used with sqlite3.
         'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': 'localhost',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '5432',                      # Set to empty string for default. Not used with sqlite3.
@@ -164,7 +165,13 @@ LOGGING = {
     }
 }
 
+
+FACEBOOK_TOKEN_HEADER = 'HTTP_AUTHORIZATION'
+
+FAKE_AUTHENTICAION = True
+
+# .local.py overrides all the common settings.
 try:
-    from .local_settings import *
+    from .local import *
 except ImportError:
     pass

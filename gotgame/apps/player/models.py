@@ -23,6 +23,7 @@ class Player(TimeStampedModel):
     fb_id = models.CharField(max_length=150, unique=True)
     fb_json = JSONField()
     fb_token = models.CharField(max_length=500, unique=True)
+    active = models.BooleanField(default=True)
     
     credits = models.IntegerField(blank=False, null=False, default=0)
     consoles = models.ManyToManyField(Console, through='PlayerConsole')

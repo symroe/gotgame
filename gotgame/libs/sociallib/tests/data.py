@@ -1,0 +1,3 @@
+test_facebook_like_response = [{u'category': u'Tv show', u'created_time': u'2013-04-09T09:47:10+0000', u'name': u'Game of Thrones', u'id': u'74133697733'}]
+likes_get_object = {u'paging': {u'next': u'https://graph.facebook.com/100001642432467/likes?target_id=74133697733&access_token=AAAFcFcVakPsBAJZCklrU1uOLmVZCROS8Axr5ZAuXnZBm61VF7fLSbhjZB41bLccmkrUX9sTucPd9d1xPpWCIRvFKUiQtQWj1qhUkGyyhqawZDZD&limit=5000&offset=5000&__after_id=74133697733'}, u'data': [{u'category': u'Tv show', u'created_time': u'2013-04-09T09:47:10+0000', u'name': u'Game of Thrones', u'id': u'74133697733'}]}
+likes_get_object_no_result = {u'data': []}

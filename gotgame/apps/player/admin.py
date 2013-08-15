@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Streak
+from .models import Player
 
 
-admin.site.register(Streak)
+admin.site.register(Player)
