@@ -1,10 +1,12 @@
 from django.db import models
+from model_utils.models import TimeStampedModel
 
-class Console(models.Model):
+
+class Console(TimeStampedModel):
     # TODO move this to it's own app?
     name = models.CharField(blank=True, max_length=255)
 
-class Title(models.Model):
+class Title(TimeStampedModel):
     name = models.CharField(blank=True, max_length=255)
     console = models.ForeignKey(Console)
     # From easports.com

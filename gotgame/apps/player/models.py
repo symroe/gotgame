@@ -35,7 +35,7 @@ class Player(TimeStampedModel):
         self.credits = self.credits - amount
 
 
-class PlayerConsole(models.Model):
+class PlayerConsole(TimeStampedModel):
     """
     A through model from player to console.  Used to store gamer_tag against
     console.
@@ -45,7 +45,7 @@ class PlayerConsole(models.Model):
     gamer_tag = models.CharField(blank=False, max_length=100)
 
 
-class Cashout(TimeStampedModel):
+class CashoutRequest(TimeStampedModel):
     """
     A cashout is a record of the amount of money owed by GotGame to the player.
     
@@ -54,3 +54,4 @@ class Cashout(TimeStampedModel):
     """
     player = models.ForeignKey(Player)
     amount = models.IntegerField(default=0)
+    status = models.CharField(blank=True, max_length=100)

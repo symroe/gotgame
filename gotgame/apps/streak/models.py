@@ -4,12 +4,12 @@ from django.db import models
 
 from model_utils.models import TimeStampedModel
 
-from player.models import Player
+from player.models import Player, CashoutRequest
 from title.models import Title, Console
 
 import constants
 
-class Streak(models.Model):
+class Streak(TimeStampedModel):
     """
     A streak is a run of games.  Streaks are started with player credits and are
     ended when a player looses a game.
@@ -18,9 +18,15 @@ class Streak(models.Model):
     """
     player = models.ForeignKey(Player)
     current_level = models.IntegerField(blank=False, choices=constants.valid_levels())
+    active = models.BooleanField(default=True)
+    streak_resolution = models.ForeignKey('StreakResolution')
+    
+class StreakResolution(TimeStampedModel):
+    cashout = models.ForeignKey(CashoutRequest)
+    credits = models.IntegerField(blank=True, null=True)
 
 
-class StreakGame(models.Model):
+class StreakGame(TimeStampedModel):
     """
     Stores the level, title and result of a game a player played.
     """
