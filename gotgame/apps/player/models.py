@@ -3,6 +3,8 @@ from model_utils.models import TimeStampedModel
 from timezone_field import TimeZoneField
 from jsonfield import JSONField
 
+from core.strings import generate_random_unique_field
+
 from title.models import Console, Title
 
 class Player(TimeStampedModel):
@@ -14,6 +16,8 @@ class Player(TimeStampedModel):
     A player buys credits and has them available.  They can't start a new streak
     if credits are 0.
     """
+    
+    id = models.CharField(max_length=40, primary_key=True, editable=False)
     
     first_name = models.CharField(max_length=100, blank=True)
     last_name = models.CharField(max_length=100, blank=True)
@@ -35,6 +39,17 @@ class Player(TimeStampedModel):
     def minus_credit(self, amount):
         self.credits = self.credits - amount
 
+
+    def save(self, *args, **kwargs):
+        """
+            Creates a hashed id.
+        """
+    
+        # creating id if not set
+        if not self.id:
+            self.id = generate_random_unique_field(self.__class__)
+        super(Player, self).save(*args, **kwargs)
+    
 
 class PlayerConsole(TimeStampedModel):
     """

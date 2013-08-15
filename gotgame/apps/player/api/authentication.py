@@ -21,7 +21,8 @@ class ActivePlayerAuthentication(Authentication):
         It also set `request.player` so that the API Resources can access to it.
         """
         
-        if hasattr(settings, 'FAKE_AUTHENTICAION'):
+        if hasattr(settings, 'FAKE_AUTHENTICAION') and settings.DEBUG:
+            # TODO Remove in production
             fb_token = "123"
             try:
                 player = Player.objects.get(fb_token=fb_token)

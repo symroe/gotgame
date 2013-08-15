@@ -19,7 +19,7 @@ class Streak(TimeStampedModel):
     player = models.ForeignKey(Player)
     current_level = models.IntegerField(blank=False, choices=constants.valid_levels())
     active = models.BooleanField(default=True)
-    streak_resolution = models.ForeignKey('StreakResolution')
+    streak_resolution = models.ForeignKey('StreakResolution', blank=True, null=True)
     
 class StreakResolution(TimeStampedModel):
     cashout = models.ForeignKey(CashoutRequest)
