@@ -69,12 +69,12 @@ class PlayerResource(ModelResource):
     It adds a custom authenticate method.
     """
     
-    # titles = fields.ToManyField(
-    #     PlayerTitleResource, 'titles', full=True, null=True, blank=True
-    # )
-    # consoles = fields.ToManyField(
-    #     PlayerConsoleResource, 'consoles', full=True, null=True, blank=True
-    # )
+    titles = fields.ToManyField(
+        PlayerTitleResource, 'titles', full=True, null=True, blank=True
+    )
+    consoles = fields.ToManyField(
+        PlayerConsoleResource, 'consoles', full=True, null=True, blank=True
+    )
     active_streaks = fields.ToManyField(
         PlayerActiveStreakResource, attribute=lambda bundle: Streak.objects.filter(player=bundle.obj, active=True), full=True, null=True, blank=True
     )
