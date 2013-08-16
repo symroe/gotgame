@@ -170,6 +170,19 @@ FACEBOOK_TOKEN_HEADER = 'HTTP_AUTHORIZATION'
 
 FAKE_AUTHENTICAION = True
 
+
+# PAYPAL
+
+PAYPAL_MODE = 'sandbox'   # sandbox or live
+
+PAYPAL_CLIENT_ID = 'AWZMBhBiPAB9vRj5t6i1QIKkuRnmpwPOPfNByH2byMoqM6PC8ejkiNu2Wna_'
+PAYPAL_CLIENT_SECRET = 'EPO5aRCgTc1Mc1B9ns1VnNKxUHfxdB60ItSWR1ecVeWxcP4r8-LD-Mj-RvdR'
+
+PAYPAL_EMAIL = 'uber.ubiwankenobi-facilitator_api1.gmail.com'
+PAYPAL_PASSWORD = '1376646473'
+PAYPAL_SIGNATURE = 'A2S1fniRGsoquzRDbs4f5rc383f8A7aKbNWBOKx-qnTuJSuXbhMGTLch'
+
+
 # .local.py overrides all the common settings.
 try:
     from .local import *
