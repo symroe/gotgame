@@ -4,7 +4,6 @@ django-tastypie==0.9.14
 django-timezone-field==0.4
 jsonfield==0.9.5
 Django==1.5.1
-mock==1.0.1
 psycopg2==2.4.6
 python-dateutil==2.1
 redis
