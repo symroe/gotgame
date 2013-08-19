@@ -21,10 +21,10 @@ urlpatterns = patterns('',
 
 if settings.DEVELOPMENT:
     from django.views.generic import TemplateView
-    from django.contrib.auth.decorators import login_required
+    from django.contrib.admin.views.decorators import staff_member_required
 
     urlpatterns += patterns('',
-            url(r'^get_fb_token/$', login_required(TemplateView.as_view(template_name='get_fb_token.html'))),
+            url(r'^get_fb_token/$', staff_member_required(TemplateView.as_view(template_name='get_fb_token.html'))),
     )
 
 
