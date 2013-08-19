@@ -1,0 +1,8 @@
+{
+    "integration": {
+        "branch": "develop",
+        "roles": {
+            "web": ["ec2-54-216-172-102.eu-west-1.compute.amazonaws.com"]
+        }
+    }
+}
