@@ -12,6 +12,9 @@ urlpatterns = patterns('',
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # url(r'^game/', include('game.urls')),
+
+    (r'^admin/api/', include('core.api.admin.urls')),
+
     url(r'^admin/', include(admin.site.urls))
 )
 

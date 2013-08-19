@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>API Explorer</title>
+
+  <script type='text/javascript' src='http://code.jquery.com/jquery-1.6.4.js'></script>
+  <script type='text/javascript' src='https://raw.github.com/douglascrockford/JSON-js/master/json2.js'></script>
+
+
+      <link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-responsive.min.css">
+      <link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css">
+
+<style type="text/css">
+    .fade {
+      opacity: 0;
+      -webkit-transition: opacity 0.15s linear;
+      -moz-transition: opacity 0.15s linear;
+      -o-transition: opacity 0.15s linear;
+      transition: opacity 0.15s linear;
+    }
+    .fade.in {
+      opacity: 1;
+    }
+</style>
+
+<script type='text/javascript'>//<![CDATA[
+$(function () {
+    var userToken = $('#userToken'),
+        apiMethod = $('#apiMethod'),
+        apiUrl = $('#apiUrl'),
+        apiData = $('#apiData'),
+        apiDataWrapper = $('#apiDataWrapper'),
+        resultMsg = $('#resultMsg'),
+        resultMsgClose = $('#resultMsg .close'),
+        resultMsgTimer = null,
+        apiResponseStatusCode = $('#apiResponseStatusCode');
+        apiResponseData = $('#apiResponseData');
+
+    // show / hide API Data depending on API Method
+    $('#apiMethod').change(function() {
+        var apiMethod = $(this).val();
+        if (apiMethod == 'POST' || apiMethod == 'PUT') {
+            apiDataWrapper.removeClass('hidden');
+        } else {
+            apiData.val('');
+            apiDataWrapper.addClass('hidden');
+        }
+    }).trigger('change');
+
+    // notification alert closer
+    resultMsgClose.click(function() {
+        resultMsg.removeClass('in');
+    });
+
+    $('#sendAction').click(function (e) {
+        e.preventDefault();
+
+        $.ajax({
+            url: apiUrl.val(),
+            type: apiMethod.val(),
+            data: apiData.val(),
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            headers: {
+                'AUTHORIZATION': userToken.val()
+            },
+            beforeSend: function() {
+                // cleanup response
+                apiResponseStatusCode.val('');
+                apiResponseData.val('');
+            },
+            complete: function(jqXHR, textStatus) {
+                // snow notification alert
+                resultMsg.addClass('in');
+                window.clearTimeout(resultMsgTimer);
+                resultMsgTimer = window.setTimeout( function(){
+                    resultMsgClose.trigger('click');
+                }, 2000);
+
+                // update response
+                apiResponseStatusCode.val(jqXHR.status + " (" + jqXHR.statusText + ")");
+                apiResponseData.val(JSON.stringify(jQuery.parseJSON(jqXHR.responseText), null, 2));
+            }
+        });
+    });
+});//]]>
+</script>
+
+
+</head>
+<body>
+  <div class="navbar navbar-inverse">
+    <div class="navbar-inner">
+        <div class="container">
+            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"> <span class="icon-bar"></span>
+ <span class="icon-bar"></span>
+ <span class="icon-bar"></span>
+
+            </button> <a class="brand" href="#">API Explorer</a>
+
+        </div>
+    </div>
+</div>
+<div class="container">
+    <form class="form-horizontal" id="apiForm">
+        <h3>Request</h3>
+
+        <div class="control-group">
+            <label class="control-label" for="userToken">Facebook User Token</label>
+            <div class="controls">
+                <input class="span7" type="text" id="userToken" placeholder="AUTHENTICATION header">
+            </div>
+        </div>
+        <div class="control-group">
+            <div class="btn-group control-label" style="padding: 0">
+                <select id="apiMethod" style="width:80px">
+                    <option value="GET">GET</option>
+                    <option value="PUT">PUT</option>
+                    <option value="POST">POST</option>
+                    <option value="DELETE">DELETE</option>
+                </select>
+            </div>
+            <div class="controls">
+
+                <input class="span7" id="apiUrl" type="text" value="{{base_url}}">
+            </div>
+        </div>
+        <div class="control-group" id="apiDataWrapper">
+            <label class="control-label" for="apiData">POST/PUT Data</label>
+            <div class="controls">
+                <textarea class="span7" id="apiData" rows="6" placeholder="json format"></textarea>
+            </div>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary" id="sendAction">Send</button>
+        </div>
+    </form>
+    <form class="form-horizontal" id="resultForm">
+        <div class="alert alert-success fade" id="resultMsg">
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+          Response updated
+        </div>
+
+        <h3>Result</h3>
+        <div class="control-group">
+            <label class="control-label" for="apiResponseStatusCode">Status Code</label>
+            <div class="controls">
+                <input type="text" id="apiResponseStatusCode" readonly="readonly" class="span3">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="apiResponseData">Response</label>
+            <div class="controls">
+                <textarea class="span7" rows="10" id="apiResponseData" readonly="readonly"></textarea>
+            </div>
+        </div>
+    </form>
+</div>
+<!-- /container -->
+
+</body>
+</html>
