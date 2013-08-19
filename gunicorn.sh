@@ -7,8 +7,8 @@ NUM_WORKERS=3
 USER=ubuntu
 GROUP=ubuntu
 ADDRESS=127.0.0.1:8000
-cd /home/ubuntu/gotgame/
-source /home/ubuntu/gotgame/env/bin/activate
+cd /srv/gotgame/current
+source /srv/gotgame/env/bin/activate
 test -d $LOGDIR || mkdir -p $LOGDIR
 exec gunicorn gotgame.wsgi:application -w $NUM_WORKERS --bind=$ADDRESS \
   --user=$USER --group=$GROUP --log-level=debug \
