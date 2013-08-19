@@ -22,24 +22,24 @@ class ActivePlayerAuthentication(Authentication):
         It also set `request.player` so that the API Resources can access to it.
         """
 
-        if settings.DEVELOPMENT:
-            # TODO Remove in production
-            fb_token = "123"
-            try:
-                player = Player.objects.get(fb_token=fb_token)
-            except Player.DoesNotExist:
-                player = Player(fb_token=fb_token)
-
-            player.save()
-
-            request.player = player
-            return True
-
         # getting fb_token, if doesn't exist => return False
         fb_token = request.META.get(settings.FACEBOOK_TOKEN_HEADER)
 
         if not fb_token:
-            return False
+            if settings.DEVELOPMENT:
+                # TODO Remove in production
+                fb_token = "123"
+                try:
+                    player = Player.objects.get(fb_token=fb_token)
+                except Player.DoesNotExist:
+                    player = Player(fb_token=fb_token)
+
+                player.save()
+
+                request.player = player
+                return True
+            else:
+                return False
 
         # getting player, if doesn't exist => return False
         try:

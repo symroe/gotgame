@@ -8,10 +8,11 @@ from django.conf import settings
 
 from tastypie.utils import trailing_slash
 from tastypie import http, fields
-from tastypie.resources import ModelResource
 
 from title.models import Title, Console
 from streak.models import Streak
+
+from core.resources import GotGameModelResource
 
 from ..models import Player
 from ..utils import create_or_update_player_from_token
@@ -22,37 +23,38 @@ from .authorization import PlayerAuthorization
 # POST parameter used during authentication.
 USER_TOKEN_PARAM = 'user_token'
 
-class PlayerTitleResource(ModelResource):
+
+class PlayerTitleResource(GotGameModelResource):
     class Meta:
         queryset = Title.objects.all()
-        allowed_methods = ['get', ]
+        allowed_methods = []
         # fields = ['id', 'fb_id', 'fb_token']
         authentication = ActivePlayerAuthentication()
         # authorization = PlayerAuthorization(player_rel='player__pk')
         include_resource_uri = False
 
-class PlayerConsoleResource(ModelResource):
+
+class PlayerConsoleResource(GotGameModelResource):
     class Meta:
         queryset = Console.objects.all()
-        allowed_methods = ['get', ]
+        allowed_methods = []
         # fields = ['id', 'fb_id', 'fb_token']
         authentication = ActivePlayerAuthentication()
         authorization = PlayerAuthorization(player_rel='player__pk')
         include_resource_uri = False
 
-class PlayerActiveStreakResource(ModelResource):
+
+class PlayerActiveStreakResource(GotGameModelResource):
     class Meta:
         queryset = Streak.objects.filter(active=True)
-        allowed_methods = ['get', ]
+        allowed_methods = []
         # fields = ['id', 'fb_id', 'fb_token']
         # authentication = ActivePlayerAuthentication()
         # authorization = PlayerAuthorization(player_rel='player__pk')
         include_resource_uri = False
 
-class PlayerInActiveStreakResource(ModelResource):
 
-
-
+class PlayerInActiveStreakResource(GotGameModelResource):
     class Meta:
         queryset = Streak.objects.filter(active=False)
         allowed_methods = ['get', ]
@@ -63,7 +65,7 @@ class PlayerInActiveStreakResource(ModelResource):
 
 
 
-class PlayerResource(ModelResource):
+class PlayerResource(GotGameModelResource):
     """
     Player Resource.
 
@@ -83,19 +85,33 @@ class PlayerResource(ModelResource):
         PlayerInActiveStreakResource, attribute=lambda bundle: Streak.objects.filter(player=bundle.obj, active=False), full=True, null=True, blank=True
     )
 
-
     class Meta:
         queryset = Player.objects.all()
         allowed_methods = ['get', ]
+        fields = ['id', 'fb_id', 'fb_token', 'credits', 'first_name', 'last_name', 'email']
         authentication = ActivePlayerAuthentication()
         authorization = PlayerAuthorization(player_rel='pk')
         include_resource_uri = False
 
     def prepend_urls(self):
         return [
+            url(r"^(?P<resource_name>%s)%s$" % (self._meta.resource_name, trailing_slash()),
+                self.wrap_view('details'), name="details"),
+
             url(r"^(?P<resource_name>%s)/authenticate%s$" % (self._meta.resource_name, trailing_slash()),
                 self.wrap_view('authenticate'), name="authenticate"),
         ]
+
+    def details(self, request, **kwargs):
+        """
+            Dispatches the request to detail.
+            Here to override the default tastypie implementation so that
+            `player/' returns the player detail instead of the list of
+            subscribers.
+
+            It's a shortcut to `player/<player-id>/`.
+        """
+        return self.dispatch_detail(request, **kwargs)
 
     def authenticate(self, request, **kwargs):
         """
@@ -138,10 +154,6 @@ class PlayerResource(ModelResource):
         bundle.data['new_player'] = created
         bundle = self.full_dehydrate(bundle)
         bundle = self.alter_detail_data_to_serialize(request, bundle)
-
-        # if new player, notify friends
-        if created:
-            new_player_notify_friends.delay(player)
 
         return self.create_response(
             request, bundle,

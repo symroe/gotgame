@@ -50,6 +50,10 @@ class Player(TimeStampedModel):
             self.id = generate_random_unique_field(self.__class__)
         super(Player, self).save(*args, **kwargs)
 
+    @property
+    def is_active(self):
+        return self.active
+
 
 class PlayerConsole(TimeStampedModel):
     """
