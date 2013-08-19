@@ -11,6 +11,6 @@ requests==1.1.0
 South==0.7.6
 hiredis
 pusher
-facebook
+-e git+git://github.com/pythonforfacebook/facebook-sdk.git@043e6fdceb87a1c33dc35b7d640231cb82eece4a#egg=facebook-sdk
 paypalrestsdk==0.6.3
 django-extensions==1.1.1

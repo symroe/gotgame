@@ -31,6 +31,7 @@ def get_env_value(var_name):
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+DEVELOPMENT = False
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -187,9 +188,6 @@ LOGGING = {
 
 
 FACEBOOK_TOKEN_HEADER = 'HTTP_AUTHORIZATION'
-
-FAKE_AUTHENTICAION = True
-
 
 # FACEBOOK
 GOTGAME_FACEBOOK_APP_ID = '509580469126773'

@@ -1,4 +1,5 @@
 from django.conf.urls import patterns, include, url
+from django.conf import settings
 
 from django.contrib import admin
 admin.autodiscover()
@@ -15,8 +16,16 @@ urlpatterns = patterns('',
 
     (r'^admin/api/', include('core.api.admin.urls')),
 
-    url(r'^admin/', include(admin.site.urls))
+    url(r'^admin/', include(admin.site.urls)),
 )
+
+if settings.DEVELOPMENT:
+    from django.views.generic import TemplateView
+    from django.contrib.auth.decorators import login_required
+
+    urlpatterns += patterns('',
+            url(r'^get_fb_token/$', login_required(TemplateView.as_view(template_name='get_fb_token.html'))),
+    )
 
 
 from tastypie.api import Api
