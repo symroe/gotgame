@@ -8,6 +8,7 @@ from django.conf import settings
 
 from tastypie.utils import trailing_slash
 from tastypie import http, fields
+from tastypie.validation import CleanedDataFormValidation
 
 from title.models import Title, Console
 from streak.models import Streak
@@ -19,6 +20,9 @@ from ..utils import create_or_update_player_from_token
 
 from .authentication import ActivePlayerAuthentication
 from .authorization import PlayerAuthorization
+from .constants import PERSONAL_DETAILS_FIELDS
+from .forms import PersonalDetailsForm
+
 
 # POST parameter used during authentication.
 USER_TOKEN_PARAM = 'user_token'
@@ -64,6 +68,19 @@ class PlayerInActiveStreakResource(GotGameModelResource):
         include_resource_uri = False
 
 
+class PersonalDetailsResource(GotGameModelResource):
+    """
+    Personal Details Resource.
+    """
+    class Meta:
+        queryset = Player.objects.all()
+        allowed_methods = ['get', 'put']
+        fields = PERSONAL_DETAILS_FIELDS
+        authentication = ActivePlayerAuthentication()
+        authorization = PlayerAuthorization(player_rel='pk')
+        validation = CleanedDataFormValidation(form_class=PersonalDetailsForm)
+        include_resource_uri = False
+
 
 class PlayerResource(GotGameModelResource):
     """
@@ -93,6 +110,11 @@ class PlayerResource(GotGameModelResource):
         authorization = PlayerAuthorization(player_rel='pk')
         include_resource_uri = False
 
+    def __init__(self, *args, **kwargs):
+        super(PlayerResource, self).__init__(*args, **kwargs)
+
+        self.personal_details_resource = PersonalDetailsResource()
+
     def prepend_urls(self):
         return [
             url(r"^(?P<resource_name>%s)%s$" % (self._meta.resource_name, trailing_slash()),
@@ -100,6 +122,9 @@ class PlayerResource(GotGameModelResource):
 
             url(r"^(?P<resource_name>%s)/authenticate%s$" % (self._meta.resource_name, trailing_slash()),
                 self.wrap_view('authenticate'), name="authenticate"),
+
+            url(r"^(?P<resource_name>%s)/personaldetails%s$" % (self._meta.resource_name, trailing_slash()),
+                self.wrap_view('dispatch_personal_details'), name="personaldetails"),
         ]
 
     def details(self, request, **kwargs):
@@ -107,7 +132,7 @@ class PlayerResource(GotGameModelResource):
             Dispatches the request to detail.
             Here to override the default tastypie implementation so that
             `player/' returns the player detail instead of the list of
-            subscribers.
+            players.
 
             It's a shortcut to `player/<player-id>/`.
         """
@@ -160,3 +185,14 @@ class PlayerResource(GotGameModelResource):
             response_class=http.HttpCreated if created else HttpResponse
         )
 
+    def dispatch_personal_details(self, request, **kwargs):
+        """
+        `personaldetails` end point.
+
+
+        It filters the request by player to be sure that we don't expose anything data
+        of other players and dispatches the request to the (:class: PersonalDetailsResource).
+        """
+        self.is_authenticated(request)
+        kwargs['pk'] = request.player.pk
+        return self.personal_details_resource.dispatch('detail', request, **kwargs)
