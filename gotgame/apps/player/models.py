@@ -5,7 +5,7 @@ from jsonfield import JSONField
 
 from core.strings import generate_random_unique_field
 
-from title.models import Console, Title
+from title.models import ConsoleNetwork, Title
 
 
 class Player(TimeStampedModel):
@@ -31,8 +31,8 @@ class Player(TimeStampedModel):
     active = models.BooleanField(default=True)
 
     credits = models.IntegerField(blank=False, null=False, default=0)
-    consoles = models.ManyToManyField(Console, through='PlayerConsole')
-    titles = models.ManyToManyField(Title)
+    networks = models.ManyToManyField(ConsoleNetwork, through='PlayerConsoleNetwork', blank=True, null=True)
+    titles = models.ManyToManyField(Title, blank=True, null=True)
 
     def add_credit(self, amount):
         self.credits = self.credits + amount
@@ -40,6 +40,9 @@ class Player(TimeStampedModel):
     def minus_credit(self, amount):
         self.credits = self.credits - amount
 
+    @property
+    def full_name(self):
+        return ' '.join([self.first_name, self.last_name])
 
     def save(self, *args, **kwargs):
         """
@@ -55,13 +58,16 @@ class Player(TimeStampedModel):
     def is_active(self):
         return self.active
 
+    def __unicode__(self):
+        return u'%s' % self.full_name
 
-class PlayerConsole(TimeStampedModel):
+
+class PlayerConsoleNetwork(TimeStampedModel):
     """
-    A through model from player to console.  Used to store gamer_tag against
+    A through model from player to console network. Used to store gamer_tag against
     console.
     """
-    console = models.ForeignKey(Console)
+    network = models.ForeignKey(ConsoleNetwork)
     player = models.ForeignKey(Player)
     gamer_tag = models.CharField(blank=False, max_length=100)
 

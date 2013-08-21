@@ -1,10 +1,10 @@
 from django.contrib import admin
 
 from streak.models import Streak
-from .models import Player, PlayerConsole
+from .models import Player, PlayerConsoleNetwork
 
-class PlayerConsoleInline(admin.StackedInline):
-    model = PlayerConsole
+class PlayerConsoleNetworkInline(admin.StackedInline):
+    model = PlayerConsoleNetwork
     extra = 0
 
 class PlayerStreakInline(admin.StackedInline):
@@ -13,10 +13,10 @@ class PlayerStreakInline(admin.StackedInline):
 
 
 class PlayerAdmin(admin.ModelAdmin):
-    inlines = [PlayerStreakInline, PlayerConsoleInline]
-    
+    inlines = [PlayerStreakInline, PlayerConsoleNetworkInline]
+
 
 admin.site.register(Player, PlayerAdmin)
-admin.site.register(PlayerConsole)
+admin.site.register(PlayerConsoleNetwork)
 
 

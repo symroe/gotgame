@@ -1,0 +1,82 @@
+[
+{
+    "pk": 1, 
+    "model": "title.consolenetwork", 
+    "fields": {
+        "modified": "2013-08-21T14:45:55.965Z", 
+        "name": "PSN", 
+        "created": "2013-08-21T14:45:55.965Z"
+    }
+},
+{
+    "pk": 2, 
+    "model": "title.consolenetwork", 
+    "fields": {
+        "modified": "2013-08-21T14:46:06.838Z", 
+        "name": "XBL", 
+        "created": "2013-08-21T14:46:06.838Z"
+    }
+},
+{
+    "pk": 1, 
+    "model": "title.console", 
+    "fields": {
+        "network": 1, 
+        "modified": "2013-08-21T14:46:25.655Z", 
+        "name": "PS3", 
+        "created": "2013-08-21T14:46:25.651Z"
+    }
+},
+{
+    "pk": 2, 
+    "model": "title.console", 
+    "fields": {
+        "network": 1, 
+        "modified": "2013-08-21T14:46:31.675Z", 
+        "name": "PS4", 
+        "created": "2013-08-21T14:46:31.673Z"
+    }
+},
+{
+    "pk": 3, 
+    "model": "title.console", 
+    "fields": {
+        "network": 2, 
+        "modified": "2013-08-21T14:46:37.622Z", 
+        "name": "360", 
+        "created": "2013-08-21T14:46:37.617Z"
+    }
+},
+{
+    "pk": 4, 
+    "model": "title.console", 
+    "fields": {
+        "network": 2, 
+        "modified": "2013-08-21T14:46:44.756Z", 
+        "name": "ONE", 
+        "created": "2013-08-21T14:46:44.753Z"
+    }
+},
+{
+    "pk": 1, 
+    "model": "title.title", 
+    "fields": {
+        "platformTag": "soccer-fifa-13-360", 
+        "console": 3, 
+        "modified": "2013-08-21T14:52:05.874Z", 
+        "name": "FIFA 13", 
+        "created": "2013-08-21T14:52:05.870Z"
+    }
+},
+{
+    "pk": 2, 
+    "model": "title.title", 
+    "fields": {
+        "platformTag": "soccer-fifa-13-PS3", 
+        "console": 1, 
+        "modified": "2013-08-21T14:52:26.942Z", 
+        "name": "FIFA 13", 
+        "created": "2013-08-21T14:52:26.934Z"
+    }
+}
+]

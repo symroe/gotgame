@@ -10,12 +10,12 @@ from tastypie.utils import trailing_slash
 from tastypie import http, fields
 from tastypie.validation import CleanedDataFormValidation
 
-from title.models import Title, Console
+from title.models import Title
 from streak.models import Streak
 
 from core.resources import GotGameModelResource
 
-from ..models import Player
+from ..models import Player, PlayerConsoleNetwork
 from ..utils import create_or_update_player_from_token
 
 from .authentication import ActivePlayerAuthentication
@@ -38,11 +38,13 @@ class PlayerTitleResource(GotGameModelResource):
         include_resource_uri = False
 
 
-class PlayerConsoleResource(GotGameModelResource):
+class PlayerConsoleNetworkResource(GotGameModelResource):
+    name = fields.CharField(attribute='network__name')
+
     class Meta:
-        queryset = Console.objects.all()
+        queryset = PlayerConsoleNetwork.objects.all()
         allowed_methods = []
-        # fields = ['id', 'fb_id', 'fb_token']
+        fields = ['gamer_tag']
         authentication = ActivePlayerAuthentication()
         authorization = PlayerAuthorization(player_rel='player__pk')
         include_resource_uri = False
@@ -92,8 +94,8 @@ class PlayerResource(GotGameModelResource):
     titles = fields.ToManyField(
         PlayerTitleResource, 'titles', full=True, null=True, blank=True
     )
-    consoles = fields.ToManyField(
-        PlayerConsoleResource, 'consoles', full=True, null=True, blank=True
+    networks = fields.ToManyField(
+        PlayerConsoleNetworkResource, attribute=lambda bundle: bundle.obj.networks.through.objects.filter(player=bundle.obj) or bundle.obj.networks, full=True, null=True, blank=True
     )
     active_streaks = fields.ToManyField(
         PlayerActiveStreakResource, attribute=lambda bundle: Streak.objects.filter(player=bundle.obj, active=True), full=True, null=True, blank=True
