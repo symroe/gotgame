@@ -7,6 +7,7 @@ from core.strings import generate_random_unique_field
 
 from title.models import Console, Title
 
+
 class Player(TimeStampedModel):
     """
     This is the main player model.  A player is exactly the same as a user.

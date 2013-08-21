@@ -13,6 +13,28 @@ class GotGameModelResource(ModelResource):
        The authorization object is usually
        (:class: player.api.authorization.PlayerAuthorization).
     """
+    def is_valid(self, bundle):
+        """
+            Flatterns the errors so that instead of being returned as:
+            {
+                <model-name>: {
+                    'field1': ['error1'],
+                    'field2': ['error2'],
+                }
+            }
+            are returned as:
+            {
+                'field1': ['error1'],
+                'field2': ['error2'],
+            }
+        """
+        errors = self._meta.validation.is_valid(bundle, bundle.request)
+
+        if errors:
+            bundle.errors = errors
+            return False
+        return True
+
     def get_object_list(self, request):
         """
             Filters the queryset including only the resources the authenticated
