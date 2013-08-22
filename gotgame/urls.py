@@ -30,9 +30,11 @@ if settings.DEVELOPMENT:
 
 from tastypie.api import Api
 from player.api.resources import PlayerResource
+from title.api.resources import ConsoleNetworkResource
 
 api_v1 = Api(api_name='v1')
 api_v1.register(PlayerResource())
+api_v1.register(ConsoleNetworkResource())
 
 urlpatterns += patterns('',
     (r'^api/', include(api_v1.urls)),
