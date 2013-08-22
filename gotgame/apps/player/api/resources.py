@@ -5,6 +5,7 @@ import facebook
 from django.conf.urls import url
 from django.http import HttpResponse
 from django.conf import settings
+from django.db.transaction import commit_on_success
 
 from tastypie.utils import trailing_slash
 from tastypie import http, fields
@@ -20,8 +21,8 @@ from ..utils import create_or_update_player_from_token
 
 from .authentication import ActivePlayerAuthentication
 from .authorization import PlayerAuthorization
-from .constants import PERSONAL_DETAILS_FIELDS
-from .forms import PersonalDetailsForm
+from .constants import PERSONAL_DETAILS_FIELDS, PLAYER_CONSOLE_FIELDS
+from .forms import PersonalDetailsForm, PlayerConsoleNetworkForm
 
 
 # POST parameter used during authentication.
@@ -39,15 +40,41 @@ class PlayerTitleResource(GotGameModelResource):
 
 
 class PlayerConsoleNetworkResource(GotGameModelResource):
-    name = fields.CharField(attribute='network__name')
+    network = fields.CharField(attribute='network__name')
 
     class Meta:
         queryset = PlayerConsoleNetwork.objects.all()
-        allowed_methods = []
-        fields = ['gamer_tag']
+        allowed_methods = ['put']
+        fields = PLAYER_CONSOLE_FIELDS
         authentication = ActivePlayerAuthentication()
         authorization = PlayerAuthorization(player_rel='player__pk')
+        validation = CleanedDataFormValidation(form_class=PlayerConsoleNetworkForm)
         include_resource_uri = False
+
+    @commit_on_success
+    def obj_create(self, bundle, **kwargs):
+        """
+            Sets PlayerConsoleNetwork.player based on the authenticated player
+        """
+        kwargs['player'] = bundle.request.player
+        bundle = super(PlayerConsoleNetworkResource, self).obj_create(bundle, **kwargs)
+
+        return bundle
+
+    def obj_update(self, bundle, skip_errors=False, **kwargs):
+        """
+            Filters by network so that:
+            * it updates a PlayerConsoleNetwork if it exists
+            * it create a new PlayerConsoleNetwork otherwise
+        """
+        kwargs['network__name'] = bundle.data['network']
+        return super(PlayerConsoleNetworkResource, self).obj_update(bundle, skip_errors=skip_errors, **kwargs)
+
+    def authorized_create_detail(self, object_list, bundle):
+        """
+            The Player can create a ConsoleNetwork
+        """
+        return True
 
 
 class PlayerActiveStreakResource(GotGameModelResource):
@@ -116,6 +143,7 @@ class PlayerResource(GotGameModelResource):
         super(PlayerResource, self).__init__(*args, **kwargs)
 
         self.personal_details_resource = PersonalDetailsResource()
+        self.network_resource = PlayerConsoleNetworkResource()
 
     def prepend_urls(self):
         return [
@@ -127,6 +155,9 @@ class PlayerResource(GotGameModelResource):
 
             url(r"^(?P<resource_name>%s)/personaldetails%s$" % (self._meta.resource_name, trailing_slash()),
                 self.wrap_view('dispatch_personal_details'), name="personaldetails"),
+
+            url(r"^(?P<resource_name>%s)/network%s$" % (self._meta.resource_name, trailing_slash()),
+                self.wrap_view('network'), name="network"),
         ]
 
     def details(self, request, **kwargs):
@@ -198,3 +229,11 @@ class PlayerResource(GotGameModelResource):
         self.is_authenticated(request)
         kwargs['pk'] = request.player.pk
         return self.personal_details_resource.dispatch('detail', request, **kwargs)
+
+    def network(self, request, **kwargs):
+        """
+        `network` end point.
+
+        It dispatches the request to the (:class: PlayerConsoleNetworkResource).
+        """
+        return self.network_resource.dispatch('detail', request, **kwargs)
