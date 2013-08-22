@@ -13,7 +13,7 @@ class TitleResource(GotGameModelResource):
     class Meta:
         queryset = Title.objects.all()
         allowed_methods = []
-        fields = ['platformTag']
+        fields = ['name', 'platformTag']
         authentication = ActivePlayerAuthentication()
         include_resource_uri = False
 
