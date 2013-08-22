@@ -42,7 +42,7 @@ class Player(TimeStampedModel):
 
     @property
     def full_name(self):
-        return ' '.join([self.first_name, self.last_name])
+        return ' '.join(filter(None, [self.first_name, self.last_name]))
 
     def save(self, *args, **kwargs):
         """
@@ -59,7 +59,7 @@ class Player(TimeStampedModel):
         return self.active
 
     def __unicode__(self):
-        return u'%s' % self.full_name
+        return u'%s' % (self.full_name or self.id)
 
 
 class PlayerConsoleNetwork(TimeStampedModel):
